@@ -199,7 +199,9 @@ private[spark] class CoarseMesosSchedulerBackend(
                         filters)
         } else {
           // Filter it out
-          d.declineOffer(offer.getId, filters)
+          d.launchTasks(Collections.singletonList(offer.getId),
+                      Collections.emptyList[MesosTaskInfo](),
+                      filters)
         }
       }
     }
