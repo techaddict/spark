@@ -18,7 +18,7 @@
 package org.apache.spark.examples
 
 import java.util.Random
-import org.apache.spark.util.Vector
+import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.SparkContext._
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet

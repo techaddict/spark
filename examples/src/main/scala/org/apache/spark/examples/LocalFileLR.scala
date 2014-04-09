@@ -18,7 +18,7 @@
 package org.apache.spark.examples
 
 import java.util.Random
-import org.apache.spark.util.Vector
+import org.apache.spark.mllib.linalg.Vector
 
 object LocalFileLR {
   val D = 10   // Numer of dimensions
