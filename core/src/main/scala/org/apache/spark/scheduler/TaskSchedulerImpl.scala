@@ -442,7 +442,7 @@ private[spark] object TaskSchedulerImpl {
    * second container on any host, and so on, in order to reduce the damage if a host fails.
    *
    * For example, given <h1, [o1, o2, o3]>, <h2, [o4]>, <h1, [o5, o6]>, returns
-   * [o1, o5, o4, 02, o6, o3]
+   * [o1, o5, o4, o2, o6, o3]
    */
   def prioritizeContainers[K, T] (map: HashMap[K, ArrayBuffer[T]]): List[T] = {
     val _keyList = new ArrayBuffer[K](map.size)
