@@ -20,13 +20,12 @@ package org.apache.spark.storage
 import java.io._
 import java.nio.ByteBuffer
 
-import scala.collection.mutable.{ArrayBuffer, HashMap}
+import scala.collection.mutable.{ArrayBuffer, HashMap, HashSet}
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.reflect.ClassTag
 import scala.util.Random
 import scala.util.control.NonFatal
-
 import org.apache.spark._
 import org.apache.spark.executor.{DataReadMethod, ShuffleWriteMetrics}
 import org.apache.spark.internal.Logging
@@ -140,6 +139,8 @@ private[spark] class BlockManager(
   // Accesses should synchronize on asyncReregisterLock.
   private var asyncReregisterTask: Future[Unit] = null
   private val asyncReregisterLock = new Object
+
+  private val rddToBlocksIds = new HashMap[Int, List[BlockId]]
 
   // Field related to peer block managers that are necessary for block replication
   @volatile private var cachedPeers: Seq[BlockManagerId] = _
@@ -1271,8 +1272,11 @@ private[spark] class BlockManager(
   def removeRdd(rddId: Int): Int = {
     // TODO: Avoid a linear scan by creating another mapping of RDD.id to blocks.
     logInfo(s"Removing RDD $rddId")
-    val blocksToRemove = blockInfoManager.entries.flatMap(_._1.asRDDId).filter(_.rddId == rddId)
-    blocksToRemove.foreach { blockId => removeBlock(blockId, tellMaster = false) }
+//    val blocksToRemove = blockInfoManager.entries.flatMap(_._1.asRDDId).filter(_.rddId == rddId)
+//    blocksToRemove.foreach { blockId => removeBlock(blockId, tellMaster = false) }
+//    blocksToRemove.size
+    val blocksToRemove = rddToBlocksIds(rddId)
+    blocksToRemove.foreach{blockId => removeBlock(blockId, tellMaster = false)}
     blocksToRemove.size
   }
 
