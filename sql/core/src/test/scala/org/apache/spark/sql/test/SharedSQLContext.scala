@@ -17,8 +17,8 @@
 
 package org.apache.spark.sql.test
 
-import org.apache.spark.{SparkConf, SparkContext}
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.{SparkSession, SQLContext}
 
 
 /**
@@ -34,20 +34,25 @@ trait SharedSQLContext extends SQLTestUtils {
    * By default, the underlying [[org.apache.spark.SparkContext]] will be run in local
    * mode with the default test configurations.
    */
-  private var _ctx: TestSQLContext = null
+  private var _spark: TestSparkSession = null
+
+  /**
+   * The [[TestSparkSession]] to use for all tests in this suite.
+   */
+  protected implicit def spark: SparkSession = _spark
 
   /**
    * The [[TestSQLContext]] to use for all tests in this suite.
    */
-  protected implicit def sqlContext: SQLContext = _ctx
+  protected implicit def sqlContext: SQLContext = _spark.wrapped
 
   /**
    * Initialize the [[TestSQLContext]].
    */
   protected override def beforeAll(): Unit = {
     SQLContext.clearSqlListener()
-    if (_ctx == null) {
-      _ctx = new TestSQLContext(sparkConf)
+    if (_spark == null) {
+      _spark = new TestSparkSession(sparkConf)
     }
     // Ensure we have initialized the context before calling parent code
     super.beforeAll()
@@ -58,9 +63,9 @@ trait SharedSQLContext extends SQLTestUtils {
    */
   protected override def afterAll(): Unit = {
     try {
-      if (_ctx != null) {
-        _ctx.sparkContext.stop()
-        _ctx = null
+      if (_spark != null) {
+        _spark.stop()
+        _spark = null
       }
     } finally {
       super.afterAll()

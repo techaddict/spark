@@ -48,13 +48,18 @@ private[sql] class TestSQLContext(
   }
 
   private object testData extends SQLTestData {
-    protected override def sqlContext: SQLContext = self
+    protected override def spark: SparkSession = self.sparkSession
   }
 
 }
 
 
 private[sql] class TestSparkSession(sc: SparkContext) extends SparkSession(sc) { self =>
+
+  def this(sparkConf: SparkConf) {
+    this(new SparkContext("local[2]", "test-sql-context",
+      sparkConf.set("spark.sql.testkey", "true")))
+  }
 
   @transient
   protected[sql] override lazy val sessionState: SessionState = new SessionState(self) {

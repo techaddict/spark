@@ -37,7 +37,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   override def afterEach(): Unit = {
     try {
       // drop all databases, tables and functions after each test
-      sqlContext.sessionState.catalog.reset()
+      spark.sessionState.catalog.reset()
     } finally {
       super.afterEach()
     }
@@ -66,7 +66,8 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
 
   private def createDatabase(catalog: SessionCatalog, name: String): Unit = {
     catalog.createDatabase(
-      CatalogDatabase(name, "", sqlContext.conf.warehousePath, Map()), ignoreIfExists = false)
+      CatalogDatabase(name, "", spark.conf.get(SQLConf.WAREHOUSE_PATH), Map()),
+      ignoreIfExists = false)
   }
 
   private def createTable(catalog: SessionCatalog, name: TableIdentifier): Unit = {
@@ -100,7 +101,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("the qualified path of a database is stored in the catalog") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
 
     withTempDir { tmpDir =>
       val path = tmpDir.toString
@@ -263,7 +264,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
 
     databaseNames.foreach { dbName =>
       val dbNameWithoutBackTicks = cleanIdentifier(dbName)
-      assert(!sqlContext.sessionState.catalog.databaseExists(dbNameWithoutBackTicks))
+      assert(!spark.sessionState.catalog.databaseExists(dbNameWithoutBackTicks))
 
       var message = intercept[AnalysisException] {
         sql(s"DROP DATABASE $dbName")
@@ -323,7 +324,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("create table in default db") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent1 = TableIdentifier("tab1", None)
     createTable(catalog, tableIdent1)
     val expectedTableIdent = tableIdent1.copy(database = Some("default"))
@@ -348,7 +349,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("create table in a specific db") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     createDatabase(catalog, "dbx")
     val tableIdent1 = TableIdentifier("tab1", Some("dbx"))
     createTable(catalog, tableIdent1)
@@ -373,7 +374,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: rename") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent1 = TableIdentifier("tab1", Some("dbx"))
     val tableIdent2 = TableIdentifier("tab2", Some("dbx"))
     createDatabase(catalog, "dbx")
@@ -405,7 +406,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: set properties") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -432,7 +433,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: unset properties") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -473,7 +474,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: bucketing is not supported") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -484,7 +485,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: skew is not supported") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -521,7 +522,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("alter table: rename partition") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     val part1 = Map("a" -> "1")
     val part2 = Map("b" -> "2")
@@ -622,7 +623,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   test("drop table - temporary table") {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     sql(
       """
         |CREATE TEMPORARY TABLE tab1
@@ -647,7 +648,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   private def testDropTable(isDatasourceTable: Boolean): Unit = {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -666,7 +667,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
     // SQLContext does not support create view. Log an error message, if tab1 does not exists
     sql("DROP VIEW tab1")
 
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -687,7 +688,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   private def testSetLocation(isDatasourceTable: Boolean): Unit = {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     val partSpec = Map("a" -> "1")
     createDatabase(catalog, "dbx")
@@ -745,7 +746,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   private def testSetSerde(isDatasourceTable: Boolean): Unit = {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     createDatabase(catalog, "dbx")
     createTable(catalog, tableIdent)
@@ -791,7 +792,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   private def testAddPartitions(isDatasourceTable: Boolean): Unit = {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     val part1 = Map("a" -> "1")
     val part2 = Map("b" -> "2")
@@ -841,7 +842,7 @@ class DDLSuite extends QueryTest with SharedSQLContext with BeforeAndAfterEach {
   }
 
   private def testDropPartitions(isDatasourceTable: Boolean): Unit = {
-    val catalog = sqlContext.sessionState.catalog
+    val catalog = spark.sessionState.catalog
     val tableIdent = TableIdentifier("tab1", Some("dbx"))
     val part1 = Map("a" -> "1")
     val part2 = Map("b" -> "2")
