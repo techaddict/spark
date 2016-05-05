@@ -19,36 +19,35 @@ package org.apache.spark.ml.feature;
 
 import java.util.Arrays;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.VectorUDT;
 import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.*;
 import static org.apache.spark.sql.types.DataTypes.*;
 
 public class JavaVectorAssemblerSuite {
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaVectorAssemblerSuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaVectorAssemblerSuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
   }
 
   @After
   public void tearDown() {
-    jsc.stop();
-    jsc = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test
@@ -64,7 +63,7 @@ public class JavaVectorAssemblerSuite {
     Row row = RowFactory.create(
       0, 0.0, Vectors.dense(1.0, 2.0), "a",
       Vectors.sparse(2, new int[] {1}, new double[] {3.0}), 10L);
-    Dataset<Row> dataset = sqlContext.createDataFrame(Arrays.asList(row), schema);
+    Dataset<Row> dataset = spark.createDataFrame(Arrays.asList(row), schema);
     VectorAssembler assembler = new VectorAssembler()
       .setInputCols(new String[] {"x", "y", "z", "n"})
       .setOutputCol("features");

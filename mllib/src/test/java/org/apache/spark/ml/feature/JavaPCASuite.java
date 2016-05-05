@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 import scala.Tuple2;
 
 import org.junit.After;
@@ -40,19 +42,21 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 
 public class JavaPCASuite implements Serializable {
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaPCASuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaPCASuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
   }
 
   @After
   public void tearDown() {
-    jsc.stop();
-    jsc = null;
+    spark.stop();
+    spark = null;
   }
 
   public static class VectorPair implements Serializable {
@@ -83,7 +87,7 @@ public class JavaPCASuite implements Serializable {
       Vectors.dense(2.0, 0.0, 3.0, 4.0, 5.0),
       Vectors.dense(4.0, 0.0, 0.0, 6.0, 7.0)
     );
-    JavaRDD<Vector> dataRDD = jsc.parallelize(points, 2);
+    JavaRDD<Vector> dataRDD = spark.sparkContext().parallelize(points, 2);
 
     RowMatrix mat = new RowMatrix(dataRDD.rdd());
     Matrix pc = mat.computePrincipalComponents(3);
@@ -100,7 +104,7 @@ public class JavaPCASuite implements Serializable {
       }
     );
 
-    Dataset<Row> df = sqlContext.createDataFrame(featuresExpected, VectorPair.class);
+    Dataset<Row> df = spark.createDataFrame(featuresExpected, VectorPair.class);
     PCAModel pca = new PCA()
       .setInputCol("features")
       .setOutputCol("pca_features")

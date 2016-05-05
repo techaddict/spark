@@ -19,6 +19,8 @@ package org.apache.spark.ml.feature;
 
 import java.util.Arrays;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,26 +28,24 @@ import org.junit.Test;
 
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.*;
 
 public class JavaWord2VecSuite {
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaWord2VecSuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaWord2VecSuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
   }
 
   @After
   public void tearDown() {
-    jsc.stop();
-    jsc = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test
@@ -53,7 +53,7 @@ public class JavaWord2VecSuite {
     StructType schema = new StructType(new StructField[]{
       new StructField("text", new ArrayType(DataTypes.StringType, true), false, Metadata.empty())
     });
-    Dataset<Row> documentDF = sqlContext.createDataFrame(
+    Dataset<Row> documentDF = spark.createDataFrame(
       Arrays.asList(
         RowFactory.create(Arrays.asList("Hi I heard about Spark".split(" "))),
         RowFactory.create(Arrays.asList("I wish Java could use case classes".split(" "))),

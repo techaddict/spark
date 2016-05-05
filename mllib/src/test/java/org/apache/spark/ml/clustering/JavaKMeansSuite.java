@@ -21,37 +21,33 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
 
 public class JavaKMeansSuite implements Serializable {
 
   private transient int k = 5;
-  private transient JavaSparkContext sc;
   private transient Dataset<Row> dataset;
-  private transient SQLContext sql;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    sc = new JavaSparkContext("local", "JavaKMeansSuite");
-    sql = new SQLContext(sc);
-
-    dataset = KMeansSuite.generateKMeansData(sql, 50, 3, k);
+    spark = SparkSession.builder().getOrCreate();
+    dataset = KMeansSuite.generateKMeansData(spark, 50, 3, k);
   }
 
   @After
   public void tearDown() {
-    sc.stop();
-    sc = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test

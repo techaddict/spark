@@ -20,34 +20,34 @@ package org.apache.spark.ml.feature;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import static org.apache.spark.sql.types.DataTypes.*;
 
 public class JavaStringIndexerSuite {
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaStringIndexerSuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaStringIndexerSuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
   }
 
   @After
   public void tearDown() {
-    jsc.stop();
-    sqlContext = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test
@@ -58,7 +58,7 @@ public class JavaStringIndexerSuite {
     });
     List<Row> data = Arrays.asList(
       cr(0, "a"), cr(1, "b"), cr(2, "c"), cr(3, "a"), cr(4, "a"), cr(5, "c"));
-    Dataset<Row> dataset = sqlContext.createDataFrame(data, schema);
+    Dataset<Row> dataset = spark.createDataFrame(data, schema);
 
     StringIndexer indexer = new StringIndexer()
       .setInputCol("label")

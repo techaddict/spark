@@ -21,45 +21,47 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
 
 public class JavaMultilayerPerceptronClassifierSuite implements Serializable {
 
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaLogisticRegressionSuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaLogisticRegressionSuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
   }
 
   @After
   public void tearDown() {
-    jsc.stop();
-    jsc = null;
-    sqlContext = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test
   public void testMLPC() {
-    Dataset<Row> dataFrame = sqlContext.createDataFrame(
-      jsc.parallelize(Arrays.asList(
-        new LabeledPoint(0.0, Vectors.dense(0.0, 0.0)),
-        new LabeledPoint(1.0, Vectors.dense(0.0, 1.0)),
-        new LabeledPoint(1.0, Vectors.dense(1.0, 0.0)),
-        new LabeledPoint(0.0, Vectors.dense(1.0, 1.0)))),
-      LabeledPoint.class);
+    List<LabeledPoint> data = Arrays.asList(
+      new LabeledPoint(0.0, Vectors.dense(0.0, 0.0)),
+      new LabeledPoint(1.0, Vectors.dense(0.0, 1.0)),
+      new LabeledPoint(1.0, Vectors.dense(1.0, 0.0)),
+      new LabeledPoint(0.0, Vectors.dense(1.0, 1.0))
+    );
+    Dataset<Row> dataFrame = spark.createDataFrame(data, LabeledPoint.class);
+
     MultilayerPerceptronClassifier mlpc = new MultilayerPerceptronClassifier()
       .setLayers(new int[] {2, 5, 2})
       .setBlockSize(1)

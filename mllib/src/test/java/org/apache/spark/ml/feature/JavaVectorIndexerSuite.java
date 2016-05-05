@@ -57,8 +57,8 @@ public class JavaVectorIndexerSuite implements Serializable {
       new FeatureData(Vectors.dense(1.0, 3.0)),
       new FeatureData(Vectors.dense(1.0, 4.0))
     );
-    SQLContext sqlContext = new SQLContext(sc);
-    Dataset<Row> data = sqlContext.createDataFrame(sc.parallelize(points, 2), FeatureData.class);
+    SparkSession spark = new SQLContext(sc);
+    Dataset<Row> data = spark.createDataFrame(sc.parallelize(points, 2), FeatureData.class);
     VectorIndexer indexer = new VectorIndexer()
       .setInputCol("features")
       .setOutputCol("indexed")

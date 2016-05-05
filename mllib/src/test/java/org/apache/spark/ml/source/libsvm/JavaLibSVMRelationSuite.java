@@ -23,6 +23,8 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.common.io.Files;
 
+import org.apache.spark.SparkConf;
+import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,16 +43,18 @@ import org.apache.spark.util.Utils;
  * Test LibSVMRelation in Java.
  */
 public class JavaLibSVMRelationSuite {
-  private transient JavaSparkContext jsc;
-  private transient SQLContext sqlContext;
+  private transient SparkSession spark;
 
   private File tempDir;
   private String path;
 
   @Before
   public void setUp() throws IOException {
-    jsc = new JavaSparkContext("local", "JavaLibSVMRelationSuite");
-    sqlContext = new SQLContext(jsc);
+    SparkConf sparkConf = new SparkConf();
+    sparkConf.setMaster("local");
+    sparkConf.setAppName("JavaLibSVMRelationSuite");
+
+    spark = SparkSession.builder().config(sparkConf).getOrCreate();
 
     tempDir = Utils.createTempDir(System.getProperty("java.io.tmpdir"), "datasource");
     File file = new File(tempDir, "part-00000");
@@ -61,14 +65,14 @@ public class JavaLibSVMRelationSuite {
 
   @After
   public void tearDown() {
-    jsc.stop();
-    jsc = null;
+    spark.stop();
+    spark = null;
     Utils.deleteRecursively(tempDir);
   }
 
   @Test
   public void verifyLibSVMDF() {
-    Dataset<Row> dataset = sqlContext.read().format("libsvm").option("vectorType", "dense")
+    Dataset<Row> dataset = spark.read().format("libsvm").option("vectorType", "dense")
       .load(path);
     Assert.assertEquals("label", dataset.columns()[0]);
     Assert.assertEquals("features", dataset.columns()[1]);
