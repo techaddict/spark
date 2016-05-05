@@ -212,7 +212,7 @@ class HiveDDLSuite
   test("drop views") {
     withTable("tab1") {
       val tabName = "tab1"
-      sqlContext.range(10).write.saveAsTable("tab1")
+      spark.range(10).write.saveAsTable("tab1")
       withView("view1") {
         val viewName = "view1"
 
@@ -233,7 +233,7 @@ class HiveDDLSuite
   test("alter views - rename") {
     val tabName = "tab1"
     withTable(tabName) {
-      sqlContext.range(10).write.saveAsTable(tabName)
+      spark.range(10).write.saveAsTable(tabName)
       val oldViewName = "view1"
       val newViewName = "view2"
       withView(oldViewName, newViewName) {
@@ -252,7 +252,7 @@ class HiveDDLSuite
   test("alter views - set/unset tblproperties") {
     val tabName = "tab1"
     withTable(tabName) {
-      sqlContext.range(10).write.saveAsTable(tabName)
+      spark.range(10).write.saveAsTable(tabName)
       val viewName = "view1"
       withView(viewName) {
         val catalog = hiveContext.sessionState.catalog
@@ -290,7 +290,7 @@ class HiveDDLSuite
   test("alter views and alter table - misuse") {
     val tabName = "tab1"
     withTable(tabName) {
-      sqlContext.range(10).write.saveAsTable(tabName)
+      spark.range(10).write.saveAsTable(tabName)
       val oldViewName = "view1"
       val newViewName = "view2"
       withView(oldViewName, newViewName) {
@@ -354,7 +354,7 @@ class HiveDDLSuite
 
   test("drop view using drop table") {
     withTable("tab1") {
-      sqlContext.range(10).write.saveAsTable("tab1")
+      spark.range(10).write.saveAsTable("tab1")
       withView("view1") {
         sql("CREATE VIEW view1 AS SELECT * FROM tab1")
         val message = intercept[AnalysisException] {
