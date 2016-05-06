@@ -50,11 +50,11 @@ class SQLExecutionSuite extends SparkFunSuite {
   }
 
   test("concurrent query execution with fork-join pool (SPARK-13747)") {
-    val conf = new SparkConf()
-    conf.setMaster("local[*]")
-    conf.setAppName("test")
+    val spark = SparkSession.builder
+      .master("local[*]")
+      .appName("test")
+      .getOrCreate()
 
-    val spark = SparkSession.builder.config(conf).getOrCreate()
     import spark.implicits._
     try {
       // Should not throw IllegalArgumentException

@@ -157,10 +157,11 @@ object DatasetBenchmark {
   }
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf()
-      .setMaster("local[*]")
-      .setAppName("Dataset benchmark")
-    val spark = SparkSession.builder.config(conf).getOrCreate()
+    val spark = SparkSession.builder
+      .master("local[*]")
+      .appName("Dataset benchmark")
+      .config(conf)
+      .getOrCreate()
 
     val numRows = 100000000
     val numChains = 10
