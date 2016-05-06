@@ -34,10 +34,12 @@ import org.apache.spark.util.{Benchmark, Utils}
 object ParquetReadBenchmark {
   val conf = new SparkConf()
   conf.set("spark.sql.parquet.compression.codec", "snappy")
-  conf.setMaster("local[1]")
-  conf.setAppName("test-sql-context")
 
-  val spark = SparkSession.builder.config(conf).getOrCreate()
+  val spark = SparkSession.builder
+    .master("local[1]")
+    .appName("test-sql-context")
+    .config(conf)
+    .getOrCreate()
 
   // Set default configs. Individual cases will change them if necessary.
   spark.conf.set(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key, "true")
