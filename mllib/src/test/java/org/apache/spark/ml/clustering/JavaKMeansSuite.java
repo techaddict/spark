@@ -17,20 +17,20 @@
 
 package org.apache.spark.ml.clustering;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
 
 public class JavaKMeansSuite implements Serializable {
 

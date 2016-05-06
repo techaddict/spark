@@ -17,40 +17,37 @@
 
 package org.apache.spark.ml.feature;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.mllib.linalg.Matrix;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.linalg.distributed.RowMatrix;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import scala.Tuple2;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import scala.Tuple2;
 
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.linalg.distributed.RowMatrix;
-import org.apache.spark.mllib.linalg.Matrix;
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 public class JavaPCASuite implements Serializable {
   private transient SparkSession spark;
+  private transient JavaSparkContext jsc;
 
   @Before
   public void setUp() {
-    SparkConf sparkConf = new SparkConf();
-    sparkConf.setMaster("local");
-    sparkConf.setAppName("JavaPCASuite");
-
-    spark = SparkSession.builder().config(sparkConf).getOrCreate();
+    spark = SparkSession.builder()
+      .master("local")
+      .appName("JavaPCASuite")
+      .getOrCreate();
+    jsc = new JavaSparkContext(spark.sparkContext());
   }
 
   @After
@@ -87,7 +84,7 @@ public class JavaPCASuite implements Serializable {
       Vectors.dense(2.0, 0.0, 3.0, 4.0, 5.0),
       Vectors.dense(4.0, 0.0, 0.0, 6.0, 7.0)
     );
-    JavaRDD<Vector> dataRDD = spark.sparkContext().parallelize(points, 2);
+    JavaRDD<Vector> dataRDD = jsc.parallelize(points, 2);
 
     RowMatrix mat = new RowMatrix(dataRDD.rdd());
     Matrix pc = mat.computePrincipalComponents(3);

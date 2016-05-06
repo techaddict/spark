@@ -17,19 +17,17 @@
 
 package org.apache.spark.ml.util;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.util.Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.util.Utils;
+import java.io.File;
+import java.io.IOException;
 
 public class JavaDefaultReadWriteSuite {
 
@@ -39,13 +37,13 @@ public class JavaDefaultReadWriteSuite {
 
   @Before
   public void setUp() {
-    SparkConf sparkConf = new SparkConf();
-    sparkConf.setMaster("local[2]");
-    sparkConf.setAppName("JavaDefaultReadWriteSuite");
-
     SQLContext.clearActive();
-    spark = SparkSession.builder().config(sparkConf).getOrCreate();
+    spark = SparkSession.builder()
+      .master("local[2]")
+      .appName("JavaDefaultReadWriteSuite")
+      .getOrCreate();
     SQLContext.setActive(spark.wrapped());
+
     tempDir = Utils.createTempDir(
       System.getProperty("java.io.tmpdir"), "JavaDefaultReadWriteSuite");
   }

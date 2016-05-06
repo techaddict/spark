@@ -17,21 +17,19 @@
 
 package org.apache.spark.ml.classification;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.spark.SparkConf;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.regression.LabeledPoint;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.mllib.regression.LabeledPoint;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 
 public class JavaMultilayerPerceptronClassifierSuite implements Serializable {
 
@@ -39,11 +37,10 @@ public class JavaMultilayerPerceptronClassifierSuite implements Serializable {
 
   @Before
   public void setUp() {
-    SparkConf sparkConf = new SparkConf();
-    sparkConf.setMaster("local");
-    sparkConf.setAppName("JavaLogisticRegressionSuite");
-
-    spark = SparkSession.builder().config(sparkConf).getOrCreate();
+    spark = SparkSession.builder()
+      .master("local")
+      .appName("JavaLogisticRegressionSuite")
+      .getOrCreate();
   }
 
   @After

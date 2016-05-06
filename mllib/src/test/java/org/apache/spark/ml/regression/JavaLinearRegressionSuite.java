@@ -17,38 +17,40 @@
 
 package org.apache.spark.ml.regression;
 
-import java.io.Serializable;
-import java.util.List;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
-import static org.apache.spark.mllib.classification.LogisticRegressionSuite
-  .generateLogisticInputAsList;
+import org.apache.spark.sql.SparkSession;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.Serializable;
+import java.util.List;
+
+import static org.apache.spark.mllib.classification.LogisticRegressionSuite.generateLogisticInputAsList;
+import static org.junit.Assert.assertEquals;
 
 
 public class JavaLinearRegressionSuite implements Serializable {
 
+  private transient SparkSession spark;
   private transient JavaSparkContext jsc;
-  private transient SQLContext jsql;
   private transient Dataset<Row> dataset;
   private transient JavaRDD<LabeledPoint> datasetRDD;
 
   @Before
   public void setUp() {
-    jsc = new JavaSparkContext("local", "JavaLinearRegressionSuite");
-    jsql = new SQLContext(jsc);
+    spark = SparkSession.builder()
+      .master("local")
+      .appName("JavaLinearRegressionSuite")
+      .getOrCreate();
+    jsc = new JavaSparkContext(spark.sparkContext());
     List<LabeledPoint> points = generateLogisticInputAsList(1.0, 1.0, 100, 42);
     datasetRDD = jsc.parallelize(points, 2);
-    dataset = jsql.createDataFrame(datasetRDD, LabeledPoint.class);
+    dataset = spark.createDataFrame(datasetRDD, LabeledPoint.class);
     dataset.registerTempTable("dataset");
   }
 
@@ -65,7 +67,7 @@ public class JavaLinearRegressionSuite implements Serializable {
     assertEquals("auto", lr.getSolver());
     LinearRegressionModel model = lr.fit(dataset);
     model.transform(dataset).registerTempTable("prediction");
-    Dataset<Row> predictions = jsql.sql("SELECT label, prediction FROM prediction");
+    Dataset<Row> predictions = spark.sql("SELECT label, prediction FROM prediction");
     predictions.collect();
     // Check defaults
     assertEquals("features", model.getFeaturesCol());

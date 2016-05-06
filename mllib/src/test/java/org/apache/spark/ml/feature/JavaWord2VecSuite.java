@@ -17,29 +17,28 @@
 
 package org.apache.spark.ml.feature;
 
-import java.util.Arrays;
-
-import org.apache.spark.SparkConf;
-import org.apache.spark.sql.*;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.sql.types.*;
+import java.util.Arrays;
 
 public class JavaWord2VecSuite {
   private transient SparkSession spark;
 
   @Before
   public void setUp() {
-    SparkConf sparkConf = new SparkConf();
-    sparkConf.setMaster("local");
-    sparkConf.setAppName("JavaWord2VecSuite");
-
-    spark = SparkSession.builder().config(sparkConf).getOrCreate();
+    spark = SparkSession.builder()
+      .master("local")
+      .appName("JavaWord2VecSuite")
+      .getOrCreate();
   }
 
   @After

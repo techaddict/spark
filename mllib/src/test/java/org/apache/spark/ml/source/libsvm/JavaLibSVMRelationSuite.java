@@ -17,26 +17,21 @@
 
 package org.apache.spark.ml.source.libsvm;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import com.google.common.io.Files;
-
-import org.apache.spark.SparkConf;
+import org.apache.spark.mllib.linalg.DenseVector;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.util.Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.linalg.DenseVector;
-import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.util.Utils;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -50,11 +45,10 @@ public class JavaLibSVMRelationSuite {
 
   @Before
   public void setUp() throws IOException {
-    SparkConf sparkConf = new SparkConf();
-    sparkConf.setMaster("local");
-    sparkConf.setAppName("JavaLibSVMRelationSuite");
-
-    spark = SparkSession.builder().config(sparkConf).getOrCreate();
+    spark = SparkSession.builder()
+      .master("local")
+      .appName("JavaLibSVMRelationSuite")
+      .getOrCreate();
 
     tempDir = Utils.createTempDir(System.getProperty("java.io.tmpdir"), "datasource");
     File file = new File(tempDir, "part-00000");
