@@ -55,13 +55,13 @@ public class JavaOneVsRestSuite implements Serializable {
     // lambda=0.2.
     // As a result, we are drawing samples from probability distribution of an actual model.
     double[] coefficients = {
-            -0.57997, 0.912083, -0.371077, -0.819866, 2.688191,
-            -0.16624, -0.84355, -0.048509, -0.301789, 4.170682 };
+      -0.57997, 0.912083, -0.371077, -0.819866, 2.688191,
+      -0.16624, -0.84355, -0.048509, -0.301789, 4.170682};
 
     double[] xMean = {5.843, 3.057, 3.758, 1.199};
     double[] xVariance = {0.6856, 0.1899, 3.116, 0.581};
     List<LabeledPoint> points = JavaConverters.seqAsJavaListConverter(
-        generateMultinomialLogisticInput(coefficients, xMean, xVariance, true, nPoints, 42)
+      generateMultinomialLogisticInput(coefficients, xMean, xVariance, true, nPoints, 42)
     ).asJava();
     datasetRDD = jsc.parallelize(points, 2);
     dataset = spark.createDataFrame(datasetRDD, LabeledPoint.class);
@@ -69,20 +69,20 @@ public class JavaOneVsRestSuite implements Serializable {
 
   @After
   public void tearDown() {
-      spark.stop();
-      spark = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test
   public void oneVsRestDefaultParams() {
-      OneVsRest ova = new OneVsRest();
-      ova.setClassifier(new LogisticRegression());
-      Assert.assertEquals(ova.getLabelCol() , "label");
-      Assert.assertEquals(ova.getPredictionCol() , "prediction");
-      OneVsRestModel ovaModel = ova.fit(dataset);
-      Dataset<Row> predictions = ovaModel.transform(dataset).select("label", "prediction");
-      predictions.collectAsList();
-      Assert.assertEquals(ovaModel.getLabelCol(), "label");
-      Assert.assertEquals(ovaModel.getPredictionCol() , "prediction");
+    OneVsRest ova = new OneVsRest();
+    ova.setClassifier(new LogisticRegression());
+    Assert.assertEquals(ova.getLabelCol(), "label");
+    Assert.assertEquals(ova.getPredictionCol(), "prediction");
+    OneVsRestModel ovaModel = ova.fit(dataset);
+    Dataset<Row> predictions = ovaModel.transform(dataset).select("label", "prediction");
+    predictions.collectAsList();
+    Assert.assertEquals(ovaModel.getLabelCol(), "label");
+    Assert.assertEquals(ovaModel.getPredictionCol(), "prediction");
   }
 }

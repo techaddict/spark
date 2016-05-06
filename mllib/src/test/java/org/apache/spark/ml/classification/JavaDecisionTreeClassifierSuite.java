@@ -75,7 +75,7 @@ public class JavaDecisionTreeClassifierSuite implements Serializable {
       .setCacheNodeIds(false)
       .setCheckpointInterval(10)
       .setMaxDepth(2); // duplicate setMaxDepth to check builder pattern
-    for (String impurity: DecisionTreeClassifier.supportedImpurities()) {
+    for (String impurity : DecisionTreeClassifier.supportedImpurities()) {
       dt.setImpurity(impurity);
     }
     DecisionTreeClassificationModel model = dt.fit(dataFrame);

@@ -55,7 +55,7 @@ public class JavaDCTSuite {
 
   @Test
   public void javaCompatibilityTest() {
-    double[] input = new double[] {1D, 2D, 3D, 4D};
+    double[] input = new double[]{1D, 2D, 3D, 4D};
     Dataset<Row> dataset = spark.createDataFrame(
       Arrays.asList(RowFactory.create(Vectors.dense(input))),
       new StructType(new StructField[]{

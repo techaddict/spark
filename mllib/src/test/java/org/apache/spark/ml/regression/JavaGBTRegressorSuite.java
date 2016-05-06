@@ -78,7 +78,7 @@ public class JavaGBTRegressorSuite implements Serializable {
       .setMaxIter(3)
       .setStepSize(0.1)
       .setMaxDepth(2); // duplicate setMaxDepth to check builder pattern
-    for (String lossType: GBTRegressor.supportedLossTypes()) {
+    for (String lossType : GBTRegressor.supportedLossTypes()) {
       rf.setLossType(lossType);
     }
     GBTRegressionModel model = rf.fit(dataFrame);

@@ -68,7 +68,7 @@ public class JavaVectorSlicerSuite {
     );
 
     Dataset<Row> dataset =
-        spark.createDataFrame(data, (new StructType()).add(group.toStructField()));
+      spark.createDataFrame(data, (new StructType()).add(group.toStructField()));
 
     VectorSlicer vectorSlicer = new VectorSlicer()
       .setInputCol("userFeatures").setOutputCol("features");

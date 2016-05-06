@@ -63,8 +63,8 @@ public class JavaCrossValidatorSuite implements Serializable {
   public void crossValidationWithLogisticRegression() {
     LogisticRegression lr = new LogisticRegression();
     ParamMap[] lrParamMaps = new ParamGridBuilder()
-      .addGrid(lr.regParam(), new double[] {0.001, 1000.0})
-      .addGrid(lr.maxIter(), new int[] {0, 10})
+      .addGrid(lr.regParam(), new double[]{0.001, 1000.0})
+      .addGrid(lr.maxIter(), new int[]{0, 10})
       .build();
     BinaryClassificationEvaluator eval = new BinaryClassificationEvaluator();
     CrossValidator cv = new CrossValidator()

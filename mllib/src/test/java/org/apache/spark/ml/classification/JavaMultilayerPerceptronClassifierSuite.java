@@ -60,14 +60,14 @@ public class JavaMultilayerPerceptronClassifierSuite implements Serializable {
     Dataset<Row> dataFrame = spark.createDataFrame(data, LabeledPoint.class);
 
     MultilayerPerceptronClassifier mlpc = new MultilayerPerceptronClassifier()
-      .setLayers(new int[] {2, 5, 2})
+      .setLayers(new int[]{2, 5, 2})
       .setBlockSize(1)
       .setSeed(123L)
       .setMaxIter(100);
     MultilayerPerceptronClassificationModel model = mlpc.fit(dataFrame);
     Dataset<Row> result = model.transform(dataFrame);
     List<Row> predictionAndLabels = result.select("prediction", "label").collectAsList();
-    for (Row r: predictionAndLabels) {
+    for (Row r : predictionAndLabels) {
       Assert.assertEquals((int) r.getDouble(0), (int) r.getDouble(1));
     }
   }

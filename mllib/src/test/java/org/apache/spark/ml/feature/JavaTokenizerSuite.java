@@ -61,8 +61,8 @@ public class JavaTokenizerSuite {
 
 
     JavaRDD<TokenizerTestData> rdd = jsc.parallelize(Arrays.asList(
-      new TokenizerTestData("Test of tok.", new String[] {"Test", "tok."}),
-      new TokenizerTestData("Te,st.  punct", new String[] {"Te,st.", "punct"})
+      new TokenizerTestData("Test of tok.", new String[]{"Test", "tok."}),
+      new TokenizerTestData("Te,st.  punct", new String[]{"Te,st.", "punct"})
     ));
     Dataset<Row> dataset = spark.createDataFrame(rdd, TokenizerTestData.class);
 

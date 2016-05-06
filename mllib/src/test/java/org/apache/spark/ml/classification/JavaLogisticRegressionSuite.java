@@ -100,7 +100,7 @@ public class JavaLogisticRegressionSuite implements Serializable {
     model.setThreshold(1.0);
     model.transform(dataset).registerTempTable("predAllZero");
     Dataset<Row> predAllZero = spark.sql("SELECT prediction, myProbability FROM predAllZero");
-    for (Row r: predAllZero.collectAsList()) {
+    for (Row r : predAllZero.collectAsList()) {
       Assert.assertEquals(0.0, r.getDouble(0), eps);
     }
     // Call transform with params, and check that the params worked.
@@ -108,14 +108,14 @@ public class JavaLogisticRegressionSuite implements Serializable {
       .registerTempTable("predNotAllZero");
     Dataset<Row> predNotAllZero = spark.sql("SELECT prediction, myProb FROM predNotAllZero");
     boolean foundNonZero = false;
-    for (Row r: predNotAllZero.collectAsList()) {
+    for (Row r : predNotAllZero.collectAsList()) {
       if (r.getDouble(0) != 0.0) foundNonZero = true;
     }
     Assert.assertTrue(foundNonZero);
 
     // Call fit() with new params, and check as many params as we can.
     LogisticRegressionModel model2 = lr.fit(dataset, lr.maxIter().w(5), lr.regParam().w(0.1),
-        lr.threshold().w(0.4), lr.probabilityCol().w("theProb"));
+      lr.threshold().w(0.4), lr.probabilityCol().w("theProb"));
     LogisticRegression parent2 = (LogisticRegression) model2.parent();
     Assert.assertEquals(5, parent2.getMaxIter());
     Assert.assertEquals(0.1, parent2.getRegParam(), eps);
@@ -133,9 +133,9 @@ public class JavaLogisticRegressionSuite implements Serializable {
 
     model.transform(dataset).registerTempTable("transformed");
     Dataset<Row> trans1 = spark.sql("SELECT rawPrediction, probability FROM transformed");
-    for (Row row: trans1.collectAsList()) {
-      Vector raw = (Vector)row.get(0);
-      Vector prob = (Vector)row.get(1);
+    for (Row row : trans1.collectAsList()) {
+      Vector raw = (Vector) row.get(0);
+      Vector prob = (Vector) row.get(1);
       Assert.assertEquals(raw.size(), 2);
       Assert.assertEquals(prob.size(), 2);
       double probFromRaw1 = 1.0 / (1.0 + Math.exp(-raw.apply(1)));
@@ -144,10 +144,10 @@ public class JavaLogisticRegressionSuite implements Serializable {
     }
 
     Dataset<Row> trans2 = spark.sql("SELECT prediction, probability FROM transformed");
-    for (Row row: trans2.collectAsList()) {
+    for (Row row : trans2.collectAsList()) {
       double pred = row.getDouble(0);
-      Vector prob = (Vector)row.get(1);
-      double probOfPred = prob.apply((int)pred);
+      Vector prob = (Vector) row.get(1);
+      double probOfPred = prob.apply((int) pred);
       for (int i = 0; i < prob.size(); ++i) {
         Assert.assertTrue(probOfPred >= prob.apply(i));
       }

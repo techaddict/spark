@@ -66,7 +66,7 @@ public class JavaPipelineSuite {
     LogisticRegression lr = new LogisticRegression()
       .setFeaturesCol("scaledFeatures");
     Pipeline pipeline = new Pipeline()
-      .setStages(new PipelineStage[] {scaler, lr});
+      .setStages(new PipelineStage[]{scaler, lr});
     PipelineModel model = pipeline.fit(dataset);
     model.transform(dataset).registerTempTable("prediction");
     Dataset<Row> predictions = spark.sql("SELECT label, probability, prediction FROM prediction");

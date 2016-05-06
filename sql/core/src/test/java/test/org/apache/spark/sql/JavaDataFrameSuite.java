@@ -46,23 +46,26 @@ import static org.apache.spark.sql.types.DataTypes.*;
 import org.apache.spark.util.sketch.BloomFilter;
 
 public class JavaDataFrameSuite {
+  private transient SparkSession spark;
   private transient JavaSparkContext jsc;
   private transient TestSQLContext context;
 
   @Before
   public void setUp() {
     // Trigger static initializer of TestData
-    SparkContext sc = new SparkContext("local[*]", "testing");
-    jsc = new JavaSparkContext(sc);
-    context = new TestSQLContext(sc);
+    spark = SparkSession.builder()
+      .master("local[*]")
+      .appName("testing")
+      .getOrCreate();
+    jsc = new JavaSparkContext(spark.sparkContext());
+    context = new TestSQLContext(spark, true);
     context.loadTestData();
   }
 
   @After
   public void tearDown() {
-    context.sparkContext().stop();
-    context = null;
-    jsc = null;
+    spark.stop();
+    spark = null;
   }
 
   @Test

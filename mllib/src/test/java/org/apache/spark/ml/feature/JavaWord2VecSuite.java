@@ -67,8 +67,8 @@ public class JavaWord2VecSuite {
     Word2VecModel model = word2Vec.fit(documentDF);
     Dataset<Row> result = model.transform(documentDF);
 
-    for (Row r: result.select("result").collectAsList()) {
-      double[] polyFeatures = ((Vector)r.get(0)).toArray();
+    for (Row r : result.select("result").collectAsList()) {
+      double[] polyFeatures = ((Vector) r.get(0)).toArray();
       Assert.assertEquals(polyFeatures.length, 3);
     }
   }

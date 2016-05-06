@@ -74,7 +74,7 @@ public class JavaPolynomialExpansionSuite {
       )
     );
 
-    StructType schema = new StructType(new StructField[] {
+    StructType schema = new StructType(new StructField[]{
       new StructField("features", new VectorUDT(), false, Metadata.empty()),
       new StructField("expected", new VectorUDT(), false, Metadata.empty())
     });
@@ -86,8 +86,8 @@ public class JavaPolynomialExpansionSuite {
       .collectAsList();
 
     for (Row r : pairs) {
-      double[] polyFeatures = ((Vector)r.get(0)).toArray();
-      double[] expected = ((Vector)r.get(1)).toArray();
+      double[] polyFeatures = ((Vector) r.get(0)).toArray();
+      double[] expected = ((Vector) r.get(1)).toArray();
       Assert.assertArrayEquals(polyFeatures, expected, 1e-1);
     }
   }

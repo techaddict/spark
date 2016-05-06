@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.spark.sql.*;
 import scala.Tuple2;
 
 import org.junit.After;
@@ -29,25 +30,25 @@ import org.junit.Before;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.MapFunction;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Encoder;
-import org.apache.spark.sql.Encoders;
-import org.apache.spark.sql.KeyValueGroupedDataset;
 import org.apache.spark.sql.test.TestSQLContext;
 
 /**
  * Common test base shared across this and Java8DatasetAggregatorSuite.
  */
 public class JavaDatasetAggregatorSuiteBase implements Serializable {
-  protected transient JavaSparkContext jsc;
+  private transient SparkSession spark;
+  private transient JavaSparkContext jsc;
   protected transient TestSQLContext context;
 
   @Before
   public void setUp() {
     // Trigger static initializer of TestData
-    SparkContext sc = new SparkContext("local[*]", "testing");
-    jsc = new JavaSparkContext(sc);
-    context = new TestSQLContext(sc);
+    spark = SparkSession.builder()
+      .master("local[*]")
+      .appName("testing")
+      .getOrCreate();
+    jsc = new JavaSparkContext(spark.sparkContext());
+    context = new TestSQLContext(spark, true);
     context.loadTestData();
   }
 

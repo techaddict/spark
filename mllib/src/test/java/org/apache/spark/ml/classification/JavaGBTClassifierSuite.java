@@ -79,7 +79,7 @@ public class JavaGBTClassifierSuite implements Serializable {
       .setMaxIter(3)
       .setStepSize(0.1)
       .setMaxDepth(2); // duplicate setMaxDepth to check builder pattern
-    for (String lossType: GBTClassifier.supportedLossTypes()) {
+    for (String lossType : GBTClassifier.supportedLossTypes()) {
       rf.setLossType(lossType);
     }
     GBTClassificationModel model = rf.fit(dataFrame);

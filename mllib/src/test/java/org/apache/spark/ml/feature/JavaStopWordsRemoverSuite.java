@@ -61,9 +61,9 @@ public class JavaStopWordsRemoverSuite {
       RowFactory.create(Arrays.asList("I", "saw", "the", "red", "baloon")),
       RowFactory.create(Arrays.asList("Mary", "had", "a", "little", "lamb"))
     );
-    StructType schema = new StructType(new StructField[] {
+    StructType schema = new StructType(new StructField[]{
       new StructField("raw", DataTypes.createArrayType(DataTypes.StringType), false,
-                      Metadata.empty())
+        Metadata.empty())
     });
     Dataset<Row> dataset = spark.createDataFrame(data, schema);
 

@@ -54,7 +54,7 @@ public class JavaBucketizerSuite {
   public void bucketizerTest() {
     double[] splits = {-0.5, 0.0, 0.5};
 
-    StructType schema = new StructType(new StructField[] {
+    StructType schema = new StructType(new StructField[]{
       new StructField("feature", DataTypes.DoubleType, false, Metadata.empty())
     });
     Dataset<Row> dataset = spark.createDataFrame(

@@ -54,7 +54,7 @@ public class JavaStringIndexerSuite {
 
   @Test
   public void testStringIndexer() {
-    StructType schema = createStructType(new StructField[] {
+    StructType schema = createStructType(new StructField[]{
       createStructField("id", IntegerType, false),
       createStructField("label", StringType, false)
     });
@@ -72,7 +72,9 @@ public class JavaStringIndexerSuite {
       output.orderBy("id").select("id", "labelIndex").collectAsList());
   }
 
-  /** An alias for RowFactory.create. */
+  /**
+   * An alias for RowFactory.create.
+   */
   private Row cr(Object... values) {
     return RowFactory.create(values);
   }
