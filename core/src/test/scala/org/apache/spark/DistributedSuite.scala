@@ -235,7 +235,7 @@ class DistributedSuite extends SparkFunSuite with Matchers with LocalSparkContex
     assert(data.count() === size)
     // ensure only a subset of partitions were cached
     val rddBlocks = sc.env.blockManager.master.getMatchingBlockIds(_.isRDD, askSlaves = true)
-    assert(rddBlocks.size > 0, "no RDD blocks found")
+    assert(rddBlocks.nonEmpty, "no RDD blocks found")
     assert(rddBlocks.size < numPartitions, s"too many RDD blocks found, expected <$numPartitions")
   }
 

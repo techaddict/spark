@@ -185,7 +185,7 @@ private class DefaultPartitionCoalescer(val balanceSlack: Double = 0.10)
       // first get the locations for each partition, only do this once since it can be expensive
       prev.partitions.foreach(p => {
           val locs = prev.context.getPreferredLocs(prev, p.index).map(tl => tl.host)
-          if (locs.size > 0) {
+          if (locs.nonEmpty) {
             tmpPartsWithLocs.put(p, locs)
           } else {
             partsWithoutLocs += p

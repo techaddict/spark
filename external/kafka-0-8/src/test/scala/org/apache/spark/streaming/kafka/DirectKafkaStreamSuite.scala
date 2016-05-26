@@ -303,7 +303,7 @@ class DirectKafkaStreamSuite
 
     // Verify offset ranges have been recovered
     val recoveredOffsetRanges = getOffsetRanges(recoveredStream)
-    assert(recoveredOffsetRanges.size > 0, "No offset ranges recovered")
+    assert(recoveredOffsetRanges.nonEmpty, "No offset ranges recovered")
     val earlierOffsetRangesAsSets = offsetRangesAfterStop.map { x => (x._1, x._2.toSet) }
     assert(
       recoveredOffsetRanges.forall { or =>

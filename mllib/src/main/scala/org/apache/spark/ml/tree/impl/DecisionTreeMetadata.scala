@@ -61,7 +61,7 @@ private[spark] class DecisionTreeMetadata(
 
   def isMulticlass: Boolean = numClasses > 2
 
-  def isMulticlassWithCategoricalFeatures: Boolean = isMulticlass && (featureArity.size > 0)
+  def isMulticlassWithCategoricalFeatures: Boolean = isMulticlass && (featureArity.nonEmpty)
 
   def isCategorical(featureIndex: Int): Boolean = featureArity.contains(featureIndex)
 

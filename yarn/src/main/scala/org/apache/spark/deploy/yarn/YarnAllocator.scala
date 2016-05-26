@@ -265,7 +265,7 @@ private[yarn] class YarnAllocator(
 
     val allocatedContainers = allocateResponse.getAllocatedContainers()
 
-    if (allocatedContainers.size > 0) {
+    if (allocatedContainers.nonEmpty) {
       logDebug("Allocated containers: %d. Current executor count: %d. Cluster resources: %s."
         .format(
           allocatedContainers.size,
@@ -276,7 +276,7 @@ private[yarn] class YarnAllocator(
     }
 
     val completedContainers = allocateResponse.getCompletedContainersStatuses()
-    if (completedContainers.size > 0) {
+    if (completedContainers.nonEmpty) {
       logDebug("Completed %d containers".format(completedContainers.size))
       processCompletedContainers(completedContainers.asScala)
       logDebug("Finished processing %d completed containers. Current running executor count: %d."

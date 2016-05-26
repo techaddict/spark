@@ -736,7 +736,7 @@ class CheckpointSuite extends TestSuiteBase with DStreamCheckpointTester
           }
         }
         logInfo("Output after restart = " + outputStream.output.asScala.mkString("[", ", ", "]"))
-        assert(outputStream.output.size > 0, "No files processed after restart")
+        assert(outputStream.output.nonEmpty, "No files processed after restart")
         ssc.stop()
 
         // Verify whether files created while the driver was down (4, 5, 6) and files created after

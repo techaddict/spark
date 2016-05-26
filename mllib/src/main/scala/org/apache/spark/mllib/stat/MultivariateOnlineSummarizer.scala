@@ -67,7 +67,7 @@ class MultivariateOnlineSummarizer extends MultivariateStatisticalSummary with S
     if (weight == 0.0) return this
 
     if (n == 0) {
-      require(instance.size > 0, s"Vector should have dimension larger than zero.")
+      require(instance.nonEmpty, s"Vector should have dimension larger than zero.")
       n = instance.size
 
       currMean = Array.ofDim[Double](n)

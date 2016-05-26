@@ -155,7 +155,7 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
 
     val recordedBlocks = blockGeneratorListener.arrayBuffers
     val recordedData = recordedBlocks.flatten
-    assert(blockGeneratorListener.arrayBuffers.size > 0, "No blocks received")
+    assert(blockGeneratorListener.arrayBuffers.nonEmpty, "No blocks received")
     assert(recordedData.toSet === generatedData.toSet, "Received data not same")
 
     // recordedData size should be close to the expected rate; use an error margin proportional to
@@ -245,10 +245,10 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
         val (logFiles1, logFiles2) = getBothCurrentLogFiles()
         allLogFiles1 ++= logFiles1
         allLogFiles2 ++= logFiles2
-        if (allLogFiles1.size > 0) {
+        if (allLogFiles1.nonEmpty) {
           assert(!logFiles1.contains(allLogFiles1.toSeq.sorted.head))
         }
-        if (allLogFiles2.size > 0) {
+        if (allLogFiles2.nonEmpty) {
           assert(!logFiles2.contains(allLogFiles2.toSeq.sorted.head))
         }
         assert(allLogFiles1.size >= 7)

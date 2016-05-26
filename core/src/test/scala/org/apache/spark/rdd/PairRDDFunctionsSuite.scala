@@ -295,7 +295,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd2 = sc.emptyRDD[(Int, Int)](intPairCT)
 
     val joined = rdd1.cogroup(rdd2).collect()
-    assert(joined.size > 0)
+    assert(joined.nonEmpty)
   }
 
   // See SPARK-9326
@@ -306,7 +306,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val rdd1 = sc.parallelize(Array((1, 1), (1, 2), (2, 1), (3, 1)))
     val rdd2 = sc.emptyRDD[Int](intCT).groupBy((x) => 5)
     val joined = rdd1.cogroup(rdd2).collect()
-    assert(joined.size > 0)
+    assert(joined.nonEmpty)
   }
 
   test("rightOuterJoin") {

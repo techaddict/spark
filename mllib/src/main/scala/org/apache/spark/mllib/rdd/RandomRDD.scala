@@ -41,7 +41,7 @@ private[mllib] class RandomRDD[T: ClassTag](sc: SparkContext,
     @transient private val rng: RandomDataGenerator[T],
     @transient private val seed: Long = Utils.random.nextLong) extends RDD[T](sc, Nil) {
 
-  require(size > 0, "Positive RDD size required.")
+  require(nonEmpty, "Positive RDD size required.")
   require(numPartitions > 0, "Positive number of partitions required")
   require(math.ceil(size.toDouble / numPartitions) <= Int.MaxValue,
     "Partition size cannot exceed Int.MaxValue")
@@ -63,7 +63,7 @@ private[mllib] class RandomVectorRDD(sc: SparkContext,
     @transient private val rng: RandomDataGenerator[Double],
     @transient private val seed: Long = Utils.random.nextLong) extends RDD[Vector](sc, Nil) {
 
-  require(size > 0, "Positive RDD size required.")
+  require(nonEmpty, "Positive RDD size required.")
   require(numPartitions > 0, "Positive number of partitions required")
   require(vectorSize > 0, "Positive vector size required.")
   require(math.ceil(size.toDouble / numPartitions) <= Int.MaxValue,

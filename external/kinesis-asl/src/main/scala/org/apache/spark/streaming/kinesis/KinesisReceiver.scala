@@ -213,7 +213,7 @@ private[kinesis] class KinesisReceiver[T](
 
   /** Add records of the given shard to the current block being generated */
   private[kinesis] def addRecords(shardId: String, records: java.util.List[Record]): Unit = {
-    if (records.size > 0) {
+    if (records.nonEmpty) {
       val dataIterator = records.iterator().asScala.map(messageHandler)
       val metadata = SequenceNumberRange(streamName, shardId,
         records.get(0).getSequenceNumber(), records.get(records.size() - 1).getSequenceNumber())

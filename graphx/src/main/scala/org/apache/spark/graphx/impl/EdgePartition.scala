@@ -264,7 +264,7 @@ class EdgePartition[
       i += 1
     }
     // Finally, release the last accumulated run
-    if (size > 0) {
+    if (nonEmpty) {
       builder.add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
     }
     builder.toEdgePartition

@@ -353,7 +353,7 @@ class HiveWindowFunctionQuerySuite extends HiveComparisonTest with BeforeAndAfte
       |p_size, p_size - lag(p_size,1,p_size) over(distribute by p_mfgr sort by p_name) as deltaSz
       |from part
       |group by p_mfgr, p_name, p_size
-      |having p_size > 0
+      |having p_nonEmpty
     """.stripMargin, reset = false)
 
   createQueryTest("windowing.q -- 4. testCount",
@@ -588,7 +588,7 @@ class HiveWindowFunctionQuerySuite extends HiveComparisonTest with BeforeAndAfte
       |p_size, p_size - lag(p_size,1,p_size) over(distribute by p_mfgr sort by p_name) as deltaSz
       |from part
       |group by p_mfgr, p_name, p_size
-      |having p_size > 0
+      |having p_nonEmpty
     """.stripMargin, reset = false)
 
   createQueryTest("windowing.q -- 27. testMultipleRangeWindows",

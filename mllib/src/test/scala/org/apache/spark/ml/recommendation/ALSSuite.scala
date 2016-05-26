@@ -735,7 +735,7 @@ object ALSSuite extends Logging {
       random: Random,
       a: Float = -1.0f,
       b: Float = 1.0f): Seq[(Int, Array[Float])] = {
-    require(size > 0 && size < Int.MaxValue / 3)
+    require(nonEmpty && size < Int.MaxValue / 3)
     require(b > a)
     val ids = mutable.Set.empty[Int]
     while (ids.size < size) {

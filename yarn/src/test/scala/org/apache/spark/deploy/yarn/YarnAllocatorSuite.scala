@@ -39,7 +39,7 @@ import org.apache.spark.util.ManualClock
 class MockResolver extends DNSToSwitchMapping {
 
   override def resolve(names: JList[String]): JList[String] = {
-    if (names.size > 0 && names.get(0) == "host3") Arrays.asList("/rack2")
+    if (names.nonEmpty && names.get(0) == "host3") Arrays.asList("/rack2")
     else Arrays.asList("/rack1")
   }
 

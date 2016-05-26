@@ -324,7 +324,7 @@ private[spark] class TaskSchedulerImpl(
       } while (launchedTask)
     }
 
-    if (tasks.size > 0) {
+    if (tasks.nonEmpty) {
       hasLaunchedTask = true
     }
     return tasks

@@ -58,7 +58,7 @@ private[spark] class PythonWorkerFactory(pythonExec: String, envVars: Map[String
   def create(): Socket = {
     if (useDaemon) {
       synchronized {
-        if (idleWorkers.size > 0) {
+        if (idleWorkers.nonEmpty) {
           return idleWorkers.dequeue()
         }
       }

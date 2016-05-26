@@ -41,7 +41,7 @@ private[mllib] class BinaryClassificationPMMLModelExport(
   private def populateBinaryClassificationPMML(): Unit = {
      pmml.getHeader.setDescription(description)
 
-     if (model.weights.size > 0) {
+     if (model.weights.nonEmpty) {
        val fields = new SArray[FieldName](model.weights.size)
        val dataDictionary = new DataDictionary
        val miningSchema = new MiningSchema

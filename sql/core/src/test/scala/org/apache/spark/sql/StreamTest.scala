@@ -272,7 +272,7 @@ trait StreamTest extends QueryTest with Timeouts {
         }
       }
       val c = Option(cause).map(exceptionToString(_))
-      val m = if (message != null && message.size > 0) Some(message) else None
+      val m = if (message != null && message.nonEmpty) Some(message) else None
       fail(
         s"""
            |${(m ++ c).mkString(": ")}

@@ -218,7 +218,7 @@ private[spark] object ClosureCleaner extends Logging {
     // Note that all outer objects but the outermost one (first one in this list) must be closures
     var outerPairs: List[(Class[_], AnyRef)] = (outerClasses zip outerObjects).reverse
     var parent: AnyRef = null
-    if (outerPairs.size > 0) {
+    if (outerPairs.nonEmpty) {
       val (outermostClass, outermostObject) = outerPairs.head
       if (isClosure(outermostClass)) {
         logDebug(s" + outermost object is a closure, so we clone it: ${outerPairs.head}")

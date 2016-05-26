@@ -197,7 +197,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
             s"Validation data ($validationSize) smaller than expected ($lowerBound)" )
           assert(validationSize < upperBound,
             s"Validation data ($validationSize) larger than expected ($upperBound)" )
-          assert(training.collect().size > 0, "empty training data")
+          assert(training.collect().nonEmpty, "empty training data")
           assert(result ===  collectedData,
             "Each training+validation set combined should contain all of the data.")
         }
