@@ -413,7 +413,7 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
         case StringType if right.foldable =>
           if (constFormat != null) {
             Try(new SimpleDateFormat(constFormat.toString).parse(
-              t.asInstanceOf[UTF8String].toString).getTime / 1000L).getOrElse(null)
+              t.asInstanceOf[UTF8String].toString).getTime / 1000L).orNull
           } else {
             null
           }
@@ -424,7 +424,7 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
           } else {
             val formatString = f.asInstanceOf[UTF8String].toString
             Try(new SimpleDateFormat(formatString).parse(
-              t.asInstanceOf[UTF8String].toString).getTime / 1000L).getOrElse(null)
+              t.asInstanceOf[UTF8String].toString).getTime / 1000L).orNull
           }
       }
     }
@@ -531,7 +531,7 @@ case class FromUnixTime(sec: Expression, format: Expression)
           null
         } else {
           Try(UTF8String.fromString(new SimpleDateFormat(constFormat.toString).format(
-            new java.util.Date(time.asInstanceOf[Long] * 1000L)))).getOrElse(null)
+            new java.util.Date(time.asInstanceOf[Long] * 1000L)))).orNull
         }
       } else {
         val f = format.eval(input)
@@ -540,7 +540,7 @@ case class FromUnixTime(sec: Expression, format: Expression)
         } else {
           Try(UTF8String.fromString(new SimpleDateFormat(
             f.asInstanceOf[UTF8String].toString).format(new java.util.Date(
-              time.asInstanceOf[Long] * 1000L)))).getOrElse(null)
+              time.asInstanceOf[Long] * 1000L)))).orNull
         }
       }
     }
