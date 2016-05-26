@@ -223,7 +223,7 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     } else {
       basicBucketFunction _
     }
-    if (self.partitions.length == 0) {
+    if (self.partitions.isEmpty) {
       new Array[Long](buckets.length - 1)
     } else {
       // reduce() requires a non-empty RDD. This works because the mapPartitions will make

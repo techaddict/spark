@@ -1075,7 +1075,7 @@ abstract class RDD[T: ClassTag](
       combOp: (U, U) => U,
       depth: Int = 2): U = withScope {
     require(depth >= 1, s"Depth must be greater than or equal to 1 but got $depth.")
-    if (partitions.length == 0) {
+    if (partitions.isEmpty) {
       Utils.clone(zeroValue, context.env.closureSerializer.newInstance())
     } else {
       val cleanSeqOp = context.clean(seqOp)
@@ -1365,7 +1365,7 @@ abstract class RDD[T: ClassTag](
         queue ++= util.collection.Utils.takeOrdered(items, num)(ord)
         Iterator.single(queue)
       }
-      if (mapRDDs.partitions.length == 0) {
+      if (mapRDDs.partitions.isEmpty) {
         Array.empty
       } else {
         mapRDDs.reduce { (queue1, queue2) =>
@@ -1401,7 +1401,7 @@ abstract class RDD[T: ClassTag](
    *         may be empty even when it has at least 1 partition.
    */
   def isEmpty(): Boolean = withScope {
-    partitions.length == 0 || take(1).length == 0
+    partitions.isEmpty || take(1).isEmpty
   }
 
   /**

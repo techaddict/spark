@@ -233,7 +233,7 @@ private[sql] class ExchangeCoordinator(
       // Now, we estimate partitionStartIndices. partitionStartIndices.length will be the
       // number of post-shuffle partitions.
       val partitionStartIndices =
-        if (mapOutputStatistics.length == 0) {
+        if (mapOutputStatistics.isEmpty) {
           None
         } else {
           Some(estimatePartitionStartIndices(mapOutputStatistics))

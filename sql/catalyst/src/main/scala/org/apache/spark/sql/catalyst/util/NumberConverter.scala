@@ -129,7 +129,7 @@ object NumberConverter {
       return null
     }
 
-    if (n.length == 0) {
+    if (n.isEmpty) {
       return null
     }
 

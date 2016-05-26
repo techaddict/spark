@@ -237,7 +237,7 @@ private[deploy] class SparkSubmitArguments(args: Seq[String], env: Map[String, S
   }
 
   private def validateSubmitArguments(): Unit = {
-    if (args.length == 0) {
+    if (args.isEmpty) {
       printUsageAndExit(-1)
     }
     if (primaryResource == null) {

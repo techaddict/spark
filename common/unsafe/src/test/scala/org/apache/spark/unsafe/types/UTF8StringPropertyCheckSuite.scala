@@ -166,7 +166,7 @@ class UTF8StringPropertyCheckSuite extends FunSuite with GeneratorDrivenProperty
       if (length <= origin.length) {
         if (length <= 0) "" else origin.substring(0, length)
       } else {
-        if (pad.length == 0) return origin
+        if (pad.isEmpty) return origin
         val toPad = length - origin.length
         val partPad = if (toPad % pad.length == 0) "" else pad.substring(0, toPad % pad.length)
         if (isLPad) {

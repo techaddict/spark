@@ -298,7 +298,7 @@ private[sql] class JDBCRDD(
   private val columnList: String = {
     val sb = new StringBuilder()
     columns.foreach(x => sb.append(",").append(x))
-    if (sb.length == 0) "1" else sb.substring(1)
+    if (sb.isEmpty) "1" else sb.substring(1)
   }
 
   /**

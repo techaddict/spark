@@ -31,7 +31,7 @@ private[sql] class CSVOptions(@transient private val parameters: Map[String, Str
     paramValue match {
       case None => default
       case Some(null) => default
-      case Some(value) if value.length == 0 => '\u0000'
+      case Some(value) if value.isEmpty => '\u0000'
       case Some(value) if value.length == 1 => value.charAt(0)
       case _ => throw new RuntimeException(s"$paramName cannot be more than one character")
     }

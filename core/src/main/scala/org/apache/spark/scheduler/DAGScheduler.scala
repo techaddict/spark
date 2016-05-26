@@ -682,7 +682,7 @@ class DAGScheduler(
 
     val rdd = dependency.rdd
     val jobId = nextJobId.getAndIncrement()
-    if (rdd.partitions.length == 0) {
+    if (rdd.partitions.isEmpty) {
       throw new SparkException("Can't run submitMapStage on RDD with 0 partitions")
     }
 

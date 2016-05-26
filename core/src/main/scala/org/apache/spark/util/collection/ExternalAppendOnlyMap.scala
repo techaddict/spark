@@ -382,7 +382,7 @@ class ExternalAppendOnlyMap[K, V, C](
      * input streams.
      */
     override def next(): (K, C) = {
-      if (mergeHeap.length == 0) {
+      if (mergeHeap.isEmpty) {
         throw new NoSuchElementException
       }
       // Select a key from the StreamBuffer that holds the lowest key hash
@@ -431,7 +431,7 @@ class ExternalAppendOnlyMap[K, V, C](
         val pairs: ArrayBuffer[(K, C)])
       extends Comparable[StreamBuffer] {
 
-      def isEmpty: Boolean = pairs.length == 0
+      def isEmpty: Boolean = pairs.isEmpty
 
       // Invalid if there are no more pairs in this stream
       def minKeyHash: Int = {
