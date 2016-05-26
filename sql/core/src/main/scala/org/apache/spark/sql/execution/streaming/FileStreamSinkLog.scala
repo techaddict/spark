@@ -129,7 +129,7 @@ class FileStreamSinkLog(sparkSession: SparkSession, path: String)
 
   override def deserialize(bytes: Array[Byte]): Seq[SinkFileStatus] = {
     val lines = new String(bytes, UTF_8).split("\n")
-    if (lines.length == 0) {
+    if (lines.isEmpty) {
       throw new IllegalStateException("Incomplete log file")
     }
     val version = lines(0)

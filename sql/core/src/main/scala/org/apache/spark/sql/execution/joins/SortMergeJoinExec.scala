@@ -827,7 +827,7 @@ private abstract class OneSideOuterIterator(
   private[this] var bufferIndex: Int = 0
 
   // This iterator is initialized lazily so there should be no matches initially
-  assert(smjScanner.getBufferedMatches.length == 0)
+  assert(smjScanner.getBufferedMatches.isEmpty)
 
   // Set output methods to be overridden by subclasses
   protected def setStreamSideOutput(row: InternalRow): Unit

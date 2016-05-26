@@ -300,7 +300,7 @@ private[spark] object HiveUtils extends Logging {
 
       val classLoader = Utils.getContextOrSparkClassLoader
       val jars = allJars(classLoader)
-      if (jars.length == 0) {
+      if (jars.isEmpty) {
         throw new IllegalArgumentException(
           "Unable to locate hive jars to connect to metastore. " +
             "Please set spark.sql.hive.metastore.jars.")

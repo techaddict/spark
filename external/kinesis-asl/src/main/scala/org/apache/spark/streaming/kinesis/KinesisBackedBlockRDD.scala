@@ -89,7 +89,7 @@ class KinesisBackedBlockRDD[T: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     Array.tabulate(_blockIds.length) { i =>
-      val isValid = if (isBlockIdValid.length == 0) true else isBlockIdValid(i)
+      val isValid = if (isBlockIdValid.isEmpty) true else isBlockIdValid(i)
       new KinesisBackedBlockRDDPartition(i, _blockIds(i), isValid, arrayOfseqNumberRanges(i))
     }
   }
