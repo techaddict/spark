@@ -325,7 +325,7 @@ private[spark] class TaskSetManager(
       if (TaskLocality.isAllowed(locality, TaskLocality.NO_PREF)) {
         for (index <- speculatableTasks if canRunOnHost(index)) {
           val locations = tasks(index).preferredLocations
-          if (locations.size == 0) {
+          if (locations.isEmpty) {
             speculatableTasks -= index
             return Some((index, TaskLocality.PROCESS_LOCAL))
           }

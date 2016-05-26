@@ -230,7 +230,7 @@ class Word2VecModel private[ml] (
     val bVectors = dataset.sparkSession.sparkContext.broadcast(vectors)
     val d = $(vectorSize)
     val word2Vec = udf { sentence: Seq[String] =>
-      if (sentence.size == 0) {
+      if (sentence.isEmpty) {
         Vectors.sparse(d, Array.empty[Int], Array.empty[Double])
       } else {
         val sum = Vectors.zeros(d)

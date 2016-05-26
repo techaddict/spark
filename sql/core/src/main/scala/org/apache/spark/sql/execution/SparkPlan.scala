@@ -333,7 +333,7 @@ abstract class SparkPlan extends QueryPlan[SparkPlan] with Logging with Serializ
         // If we didn't find any rows after the first iteration, just try all partitions next.
         // Otherwise, interpolate the number of partitions we need to try, but overestimate it
         // by 50%.
-        if (buf.size == 0) {
+        if (buf.isEmpty) {
           numPartsToTry = totalParts - 1
         } else {
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt

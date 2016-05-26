@@ -359,7 +359,7 @@ class BlockManagerMasterEndpoint(
     }
 
     // Remove the block from master tracking if it has been removed on all slaves.
-    if (locations.size == 0) {
+    if (locations.isEmpty) {
       blockLocations.remove(blockId)
     }
     true

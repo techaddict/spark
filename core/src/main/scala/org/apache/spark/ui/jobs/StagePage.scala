@@ -333,7 +333,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val validTasks = tasks.filter(t => t.taskInfo.status == "SUCCESS" && t.metrics.isDefined)
 
       val summaryTable: Option[Seq[Node]] =
-        if (validTasks.size == 0) {
+        if (validTasks.isEmpty) {
           None
         }
         else {

@@ -1282,7 +1282,7 @@ abstract class RDD[T: ClassTag](
           // If we didn't find any rows after the previous iteration, quadruple and retry.
           // Otherwise, interpolate the number of partitions we need to try, but overestimate
           // it by 50%. We also cap the estimation in the end.
-          if (buf.size == 0) {
+          if (buf.isEmpty) {
             numPartsToTry = partsScanned * 4
           } else {
             // the left side of max is >=1 whenever partsScanned >= 2

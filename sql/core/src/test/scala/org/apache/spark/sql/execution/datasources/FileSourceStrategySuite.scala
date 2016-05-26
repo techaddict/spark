@@ -259,7 +259,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
     checkScan(table) { partitions =>
       assert(partitions.size == 3)
       assert(partitions(0).files.size == 5)
-      assert(partitions(1).files.size == 0)
+      assert(partitions(1).files.isEmpty)
       assert(partitions(2).files.size == 2)
     }
 
@@ -267,7 +267,7 @@ class FileSourceStrategySuite extends QueryTest with SharedSQLContext with Predi
     checkScan(table.where("p1=2")) { partitions =>
       assert(partitions.size == 3)
       assert(partitions(0).files.size == 3)
-      assert(partitions(1).files.size == 0)
+      assert(partitions(1).files.isEmpty)
       assert(partitions(2).files.size == 1)
     }
   }
