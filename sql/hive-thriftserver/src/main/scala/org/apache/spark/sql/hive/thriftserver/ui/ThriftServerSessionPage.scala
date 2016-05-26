@@ -44,7 +44,7 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
     val content =
       listener.synchronized { // make sure all parts in this page are consistent
-        val sessionStat = listener.getSession(parameterId).getOrElse(null)
+        val sessionStat = listener.getSession(parameterId).orNull
         require(sessionStat != null, "Invalid sessionID[" + parameterId + "]")
 
         generateBasicStats() ++
