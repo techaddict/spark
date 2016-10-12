@@ -18,8 +18,8 @@
 package org.apache.spark.api.r
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, DataOutputStream}
+import java.util.concurrent.ConcurrentMap
 
-import scala.collection.JavaConverters._
 import scala.language.existentials
 
 import com.google.common.collect.MapMaker
@@ -264,18 +264,19 @@ private[r] object JVMObjectTracker {
 
   // TODO: This map should be thread-safe if we want to support multiple
   // connections at the same time
-  private[this] val objMap = new MapMaker().weakValues().makeMap[String, Object]().asScala
+  private[this] val objMap: ConcurrentMap[String, Object] =
+    new MapMaker().weakValues().makeMap[String, Object]()
 
   // TODO: We support only one connection now, so an integer is fine.
   // Investigate using use atomic integer in the future.
   private[this] var objCounter: Int = 0
 
   def getObject(id: String): Object = {
-    objMap(id)
+    objMap.get(id)
   }
 
   def get(id: String): Option[Object] = {
-    objMap.get(id)
+    Option(objMap.get(id))
   }
 
   def put(obj: Object): String = {
@@ -285,7 +286,7 @@ private[r] object JVMObjectTracker {
     objId
   }
 
-  def remove(id: String): Option[Object] = {
+  def remove(id: String) {
     objMap.remove(id)
   }
 
